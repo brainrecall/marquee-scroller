@@ -22,6 +22,7 @@ SOFTWARE.
 */
 
 #include "TimeDB.h"
+#include "Settings.h"
 
 TimeDB::TimeDB(String apiKey)
 {
@@ -55,11 +56,25 @@ time_t TimeDB::getTime()
     return 20;
   }
 
-  while (client.connected() && !client.available()) delay(1); //waits for data
+  int delay_counter = 0;
+  while(client.connected() && !client.available())
+  {
+    delay(1); //waits for data
+    delay_counter++;
+
+    if (delay_counter > comm_timeout)
+    {
+      Serial.println("timeout waiting for data"); //error message if timeout
+      Serial.println();
+      client.stop();
+      return;
+    }
+  }
 
   Serial.println("Waiting for data");
 
   boolean record = false;
+  delay_counter = 0;
   while (client.connected() || client.available()) { //connected or data available
     char c = client.read(); //gets byte from ethernet buffer
     if (String(c) == "{") {
@@ -70,6 +85,17 @@ time_t TimeDB::getTime()
     }
     if (String(c) == "}") {
       record = false;
+    }
+    
+    delay(1); //waits for data
+    delay_counter++;
+
+    if (delay_counter > comm_timeout)
+    {
+      Serial.println("timeout waiting for data"); //error message if timeout
+      Serial.println();
+      client.stop();
+      return;
     }
   }
   client.stop(); //stop client

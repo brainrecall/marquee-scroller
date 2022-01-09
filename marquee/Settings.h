@@ -69,12 +69,13 @@ const boolean WEBSERVER_ENABLED = true;  // Device will provide a web interface 
 boolean IS_BASIC_AUTH = false;  // Use Basic Authorization for Configuration security on Web Interface
 char* www_username = "admin";  // User account for the Web Interface
 char* www_password = "password";  // Password for the Web Interface
-int minutesBetweenDataRefresh = 15;  // Time in minutes between data refresh (default 15 minutes)
+int minutesBetweenDataRefresh = 60;  // Time in minutes between data refresh (default 15 minutes)
 int minutesBetweenScrolling = 1; // Time in minutes between scrolling data (default 1 minutes and max is 10)
 int displayScrollSpeed = 25; // In milliseconds -- Configurable by the web UI (slow = 35, normal = 25, fast = 15, very fast = 5)
 boolean flashOnSeconds = true; // when true the : character in the time will flash on and off as a seconds indicator
+int comm_timeout = 30 * 1000; // number of milliseconds to wait for a response for weather or time data
 
-boolean NEWS_ENABLED = true;
+boolean NEWS_ENABLED = false;
 String NEWS_API_KEY = ""; // Get your News API Key from https://newsapi.org
 String NEWS_SOURCE = "reuters";  // https://newsapi.org/sources to get full list of news sources available
 

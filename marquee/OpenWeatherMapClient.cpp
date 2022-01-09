@@ -23,6 +23,7 @@ SOFTWARE.
 
 #include "OpenWeatherMapClient.h"
 #include "math.h"
+#include "Settings.h"
 
 OpenWeatherMapClient::OpenWeatherMapClient(String ApiKey, int CityIDs[], int cityCount, boolean isMetric) {
   updateCityIdList(CityIDs, cityCount);
@@ -61,7 +62,21 @@ void OpenWeatherMapClient::updateWeather() {
     return;
   }
 
-  while(weatherClient.connected() && !weatherClient.available()) delay(1); //waits for data
+  int delay_counter = 0;
+  while(weatherClient.connected() && !weatherClient.available())
+  {
+    delay(1); //waits for data
+    delay_counter++;
+
+    if (delay_counter > comm_timeout)
+    {
+      Serial.println("timeout waiting for data"); //error message if timeout
+      Serial.println();
+      weathers[0].error = "timeout waiting for data";
+      weatherClient.stop();
+      return;
+    }
+  }
  
   Serial.println("Waiting for data");
 
@@ -73,6 +88,7 @@ void OpenWeatherMapClient::updateWeather() {
     Serial.print(F("Unexpected response: "));
     Serial.println(status);
     weathers[0].error = "Weather Data Error: " + String(status);
+    weatherClient.stop();
     return;
   }
 
@@ -80,6 +96,7 @@ void OpenWeatherMapClient::updateWeather() {
   char endOfHeaders[] = "\r\n\r\n";
   if (!weatherClient.find(endOfHeaders)) {
     Serial.println(F("Invalid response"));
+    weatherClient.stop();
     return;
   }
 
@@ -91,6 +108,7 @@ void OpenWeatherMapClient::updateWeather() {
   if (!root.success()) {
     Serial.println(F("Weather Data Parsing failed!"));
     weathers[0].error = "Weather Data Parsing failed!";
+    weatherClient.stop();
     return;
   }
 
