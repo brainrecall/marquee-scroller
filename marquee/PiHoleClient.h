@@ -67,7 +67,7 @@ private:
   } phd;
   
   phd piHoleData;
-  
+  WiFiClient client;
   
 public:
   PiHoleClient();

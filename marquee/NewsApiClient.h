@@ -44,6 +44,7 @@ class NewsApiClient: public JsonListener {
     } newsfeed;
 
     newsfeed news[10];
+    WiFiClient client;
     
     const char* servername = "newsapi.org";  // remote server we will connect to
   
