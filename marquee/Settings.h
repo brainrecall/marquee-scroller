@@ -34,7 +34,7 @@ SOFTWARE.
  * erase the file system on the Wemos or use the “Reset Settings” option in 
  * the Web Interface.
  ******************************************************************************/
- 
+#pragma once
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266HTTPUpdateServer.h>

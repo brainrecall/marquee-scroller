@@ -23,7 +23,8 @@ SOFTWARE.
 
 #include "OpenWeatherMapClient.h"
 #include "math.h"
-#include "Settings.h"
+
+extern int comm_timeout;
 
 OpenWeatherMapClient::OpenWeatherMapClient(String ApiKey, int CityIDs[], int cityCount, boolean isMetric) {
   updateCityIdList(CityIDs, cityCount);

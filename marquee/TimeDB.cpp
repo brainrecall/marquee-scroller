@@ -22,7 +22,8 @@ SOFTWARE.
 */
 
 #include "TimeDB.h"
-#include "Settings.h"
+
+extern int comm_timeout;
 
 TimeDB::TimeDB(String apiKey)
 {
@@ -67,7 +68,7 @@ time_t TimeDB::getTime()
       Serial.println("timeout waiting for data"); //error message if timeout
       Serial.println();
       client.stop();
-      return;
+      return 20;
     }
   }
 
@@ -86,7 +87,7 @@ time_t TimeDB::getTime()
     if (String(c) == "}") {
       record = false;
     }
-    
+
     delay(1); //waits for data
     delay_counter++;
 
@@ -95,7 +96,7 @@ time_t TimeDB::getTime()
       Serial.println("timeout waiting for data"); //error message if timeout
       Serial.println();
       client.stop();
-      return;
+      return 20;
     }
   }
   client.stop(); //stop client
