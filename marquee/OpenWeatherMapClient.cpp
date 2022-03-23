@@ -59,7 +59,7 @@ void OpenWeatherMapClient::updateWeather() {
   else {
     Serial.println("connection for weather data failed"); //error message if no client connect
     Serial.println();
-    weathers[0].error = "Connection for weather data failed";
+    //weathers[0].error = "Connection for weather data failed";
     return;
   }
 
@@ -73,7 +73,7 @@ void OpenWeatherMapClient::updateWeather() {
     {
       Serial.println("timeout waiting for data"); //error message if timeout
       Serial.println();
-      weathers[0].error = "timeout waiting for data";
+      //weathers[0].error = "timeout waiting for data";
       weatherClient.stop();
       return;
     }
@@ -88,7 +88,7 @@ void OpenWeatherMapClient::updateWeather() {
   if (strcmp(status, "HTTP/1.1 200 OK") != 0) {
     Serial.print(F("Unexpected response: "));
     Serial.println(status);
-    weathers[0].error = "Weather Data Error: " + String(status);
+    //weathers[0].error = "Weather Data Error: " + String(status);
     weatherClient.stop();
     return;
   }
@@ -108,7 +108,7 @@ void OpenWeatherMapClient::updateWeather() {
   JsonObject& root = jsonBuffer.parseObject(weatherClient);
   if (!root.success()) {
     Serial.println(F("Weather Data Parsing failed!"));
-    weathers[0].error = "Weather Data Parsing failed!";
+    //weathers[0].error = "Weather Data Parsing failed!";
     weatherClient.stop();
     return;
   }
@@ -118,7 +118,7 @@ void OpenWeatherMapClient::updateWeather() {
   if (root.measureLength() <= 150) {
     Serial.println("Error Does not look like we got the data.  Size: " + String(root.measureLength()));
     weathers[0].cached = true;
-    weathers[0].error = (const char*)root["message"];
+    //weathers[0].error = (const char*)root["message"];
     Serial.println("Error: " + weathers[0].error);
     return;
   }
