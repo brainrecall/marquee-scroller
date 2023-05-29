@@ -48,7 +48,7 @@ String Wide_Clock_Style = "1";  //1="hh:mm Temp", 2="hh:mm:ss", 3="hh:mm"
 float UtcOffset;  //time zone offsets that correspond with the CityID above (offset from GMT)
 
 // Time
-TimeDB TimeDB("");
+TimeDB timeDB("");
 String lastMinute = "xx";
 int displayRefreshCount = 1;
 long lastEpoch = 0;
@@ -345,8 +345,8 @@ void loop() {
   }
   checkDisplay(); // this will see if we need to turn it on or off for night mode.
 
-  if (lastMinute != TimeDB.zeroPad(minute())) {
-    lastMinute = TimeDB.zeroPad(minute());
+  if (lastMinute != timeDB.zeroPad(minute())) {
+    lastMinute = timeDB.zeroPad(minute());
 
     if (weatherClient.getError() != "") {
       scrollMessage(weatherClient.getError());
@@ -379,8 +379,8 @@ void loop() {
       msg += " ";
 
       if (SHOW_DATE) {
-        msg += TimeDB.getDayName() + ", ";
-        msg += TimeDB.getMonthName() + " " + day() + "  ";
+        msg += timeDB.getDayName() + ", ";
+        msg += timeDB.getMonthName() + " " + day() + "  ";
       }
       if (SHOW_CITY) {
         msg += weatherClient.getCity(0) + "  ";
@@ -441,7 +441,7 @@ void loop() {
       currentTime += " " + currentTemp + getTempSymbol();
     }
     if (Wide_Clock_Style == "2") {
-      currentTime = currentTime + secondsIndicator(false) + TimeDB.zeroPad(second());
+      currentTime = currentTime + secondsIndicator(false) + timeDB.zeroPad(second());
       matrix.fillScreen(LOW); // show black
     }
     if (Wide_Clock_Style == "3") {
@@ -469,9 +469,9 @@ String zeroPad(int value) {
 
 String hourMinutes(boolean isRefresh) {
   if (IS_24HOUR) {
-    return String(hour()) + secondsIndicator(isRefresh) + TimeDB.zeroPad(minute());
+    return String(hour()) + secondsIndicator(isRefresh) + timeDB.zeroPad(minute());
   } else {
-    return String(hourFormat12()) + secondsIndicator(isRefresh) + TimeDB.zeroPad(minute());
+    return String(hourFormat12()) + secondsIndicator(isRefresh) + timeDB.zeroPad(minute());
   }
 }
 
@@ -938,8 +938,8 @@ void getWeatherData() //client function to send/receive GET request data.
   matrix.drawPixel(0, 2, HIGH);
   Serial.println("matrix Width:" + matrix.width());
   matrix.write();
-  TimeDB.updateConfig(TIMEDBKEY, weatherClient.getLat(0), weatherClient.getLon(0));
-  time_t currentTime = TimeDB.getTime();
+  timeDB.updateConfig(TIMEDBKEY, weatherClient.getLat(0), weatherClient.getLon(0));
+  time_t currentTime = timeDB.getTime();
   if(currentTime > 5000 || firstEpoch == 0) {
     setTime(currentTime);
   } else {
@@ -1066,7 +1066,7 @@ void displayWeatherData() {
     temperature.remove(temperature.indexOf(".") + 2);
   }
 
-  String time = TimeDB.getDayName() + ", " + TimeDB.getMonthName() + " " + day() + ", " + hourFormat12() + ":" + TimeDB.zeroPad(minute()) + " " + TimeDB.getAmPm();
+  String time = timeDB.getDayName() + ", " + timeDB.getMonthName() + " " + day() + ", " + hourFormat12() + ":" + timeDB.zeroPad(minute()) + " " + timeDB.getAmPm();
 
   Serial.println(weatherClient.getCity(0));
   Serial.println(weatherClient.getCondition(0));
@@ -1301,7 +1301,7 @@ void checkDisplay() {
   if (timeDisplayTurnsOn == "" || timeDisplayTurnsOff == "") {
     return; // nothing to do
   }
-  String currentTime = TimeDB.zeroPad(hour()) + ":" + TimeDB.zeroPad(minute());
+  String currentTime = timeDB.zeroPad(hour()) + ":" + timeDB.zeroPad(minute());
 
   if (currentTime == timeDisplayTurnsOn && !displayOn) {
     Serial.println("Time to turn display on: " + currentTime);
