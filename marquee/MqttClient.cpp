@@ -34,15 +34,17 @@ void callback(char* topic, uint8_t* message, unsigned int length) {
   lastMqttMessageNew = true;
 }
 
-MqttClient::MqttClient(String passedServer, int port, String passedTopic):
+MqttClient::MqttClient(String passedServer, int port, String user, String password, String passedTopic):
   client("", 0, callback, wclient) {
-  updateMqttClient(passedServer, port, passedTopic);
+  updateMqttClient(passedServer, port, user, password, passedTopic);
 }
 
-void MqttClient::updateMqttClient(String passedServer, int port, String passedTopic) {
+void MqttClient::updateMqttClient(String passedServer, int port, String user, String password, String passedTopic) {
   this->port = port;
   passedServer.toCharArray(server, MAX_SERVER_LEN);
   passedTopic.toCharArray(topic, MAX_TOPIC_LEN);
+  user.toCharArray(this->user, MAX_TOPIC_LEN);
+  password.toCharArray(this->password, MAX_TOPIC_LEN);
   client.setServer(server, port);
   client.disconnect();
 }
@@ -69,7 +71,7 @@ String MqttClient::getError() {
   
 void MqttClient::loop() {
   if (!client.connected()) {
-    if (client.connect("marquee")) {
+    if (client.connect("marquee", this->user, this->password)) { //TODO get from settings
       failMessage[0] = 0;
       if (!client.subscribe(topic))
         sprintf(failMessage, "Failed to connect to topic:%s", topic);

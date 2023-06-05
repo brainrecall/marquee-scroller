@@ -40,14 +40,16 @@ class MqttClient {
     char topic[MAX_TOPIC_LEN] = {0};
     char server[MAX_SERVER_LEN] = {0};
     int port = 0;
+    char user[MAX_TOPIC_LEN];
+    char password[MAX_TOPIC_LEN];
     char failMessage[MAX_TOPIC_LEN + 100] = {0};
   
   public:
-    MqttClient(String passedServer, int port, String passedTopic);
+    MqttClient(String passedServer, int port, String user, String password, String passedTopic);
     String getError();
     char* getLastMqttMessage();
     char* getNewMqttMessage();
-    void updateMqttClient(String passedServer, int port, String passedTopic);
+    void updateMqttClient(String passedServer, int port, String user, String password, String passedTopic);
 
     void loop();
 };

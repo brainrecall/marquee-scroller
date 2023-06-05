@@ -65,6 +65,7 @@ OpenWeatherMapClient weatherClient(APIKEY, CityIDs, 1, IS_METRIC);
 // (some) Default Weather Settings
 boolean SHOW_DATE = false;
 boolean SHOW_CITY = false;
+boolean SHOW_CURRENT_TEMP = true;
 boolean SHOW_CONDITION = true;
 boolean SHOW_HUMIDITY = true;
 boolean SHOW_WIND = false;
@@ -80,7 +81,7 @@ int printerCount = 0;
 PiHoleClient piholeClient;
 
 // Mqtt Client
-MqttClient mqttClient(MqttServer, MqttPort, MqttTopic);
+MqttClient mqttClient(MqttServer, MqttPort, MqttUser, MqttPass, MqttTopic);
 
 ESP8266WebServer server(WEBSERVER_PORT);
 ESP8266HTTPUpdateServer serverUpdater;
@@ -408,7 +409,9 @@ void loop() {
       if (SHOW_CITY) {
         msg += weatherClient.getCity(0) + "  ";
       }
-      msg += temperature + getTempSymbol() + "  ";
+      if (SHOW_CURRENT_TEMP) {
+        msg += temperature + getTempSymbol() + "  ";
+      }
 
       //show high/low temperature
       if (SHOW_HIGHLOW) {
@@ -452,7 +455,8 @@ void loop() {
 
       if (USE_MQTT) {
         // add mqtt message if there is one
-        msg += String(mqttClient.getLastMqttMessage());
+        // clean the text of non-printable charecters, in the future consider moving cleanText to a utilitiy class
+        msg += newsClient.cleanText(String(mqttClient.getLastMqttMessage()));
       }
 
       scrollMessage(msg);
@@ -1686,7 +1690,7 @@ void readCityIds() {
   weatherClient.setMetric(IS_METRIC);
   weatherClient.updateCityIdList(CityIDs, 1);
   printerClient.updateOctoPrintClient(OctoPrintApiKey, OctoPrintServer, OctoPrintPort, OctoAuthUser, OctoAuthPass);
-  mqttClient.updateMqttClient(MqttServer, MqttPort, MqttTopic);
+  mqttClient.updateMqttClient(MqttServer, MqttPort, MqttUser, MqttPass, MqttTopic);
 }
 
 void scrollMessage(String msg) {
