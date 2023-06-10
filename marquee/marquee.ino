@@ -65,7 +65,7 @@ OpenWeatherMapClient weatherClient(APIKEY, CityIDs, 1, IS_METRIC);
 // (some) Default Weather Settings
 boolean SHOW_DATE = false;
 boolean SHOW_CITY = false;
-boolean SHOW_CURRENT_TEMP = true;
+boolean SHOW_CURRENT_TEMP = false;
 boolean SHOW_CONDITION = true;
 boolean SHOW_HUMIDITY = true;
 boolean SHOW_WIND = false;
@@ -357,7 +357,7 @@ void loop() {
   // allow the mqtt client to do its thing
   if (USE_MQTT) {
     mqttClient.loop();
-    String newMqttMessage = mqttClient.getNewMqttMessage();
+    String newMqttMessage = newsClient.cleanText(mqttClient.getNewMqttMessage());
     if (newMqttMessage != "") {
       scrollMessage(newMqttMessage);
     }
